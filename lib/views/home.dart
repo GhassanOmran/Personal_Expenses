@@ -1,42 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_expenses/controllers/home_controller.dart';
+import 'package:personal_expenses/models/transactions_list.dart';
 import 'package:personal_expenses/views/new_transactions.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  // List<Map<String, Object>> get groupedTransactionValues {
-  //   return List.generate(7, (index) {
-  //     final weekDay = DateTime.now().subtract(
-  //       Duration(days: index),
-  //     );
-  //     var totalSum = 0.0;
-
-  //     for (var i = 0; i < recentTransactions.length; i++) {
-  //       if (recentTransactions[i].date.day == weekDay.day &&
-  //           recentTransactions[i].date.month == weekDay.month &&
-  //           recentTransactions[i].date.year == weekDay.year) {
-  //         totalSum += recentTransactions[i].amount;
-  //       }
-  //     }
-
-  //     return {
-  //       'day': DateFormat.E().format(weekDay).substring(0, 1),
-  //       'amount': totalSum,
-  //     };
-  //   }).reversed.toList();
-  // }
-
-  // double get totalSpending {
-  //   return groupedTransactionValues.fold(0.0, (sum, item) {
-  //     return sum + item['amount'];
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<HomeController>(context);
+    HomeController homeController =
+        Provider.of<HomeController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(),
       body: Column(
@@ -94,38 +69,93 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ]),
-                    // List.generate(
-                    //     7,
-                    //     (index) => Chart(
-                    //           day: 'T',
-                    //           spending: 'sp',
-                    //           spendingOfTotal: 'SPo',
-                    //         )),
-                  ]
-                  // groupedTransactionValues.map((data) {
-                  //   return Flexible(
-                  //     fit: FlexFit.tight,
-                  //     child: ChartBar(
-                  //       data['day'],
-                  //       data['amount'],
-                  //       totalSpending == 0.0
-                  //           ? 0.0
-                  //           : (data['amount'] as double) / totalSpending,
-                  //     ),
-                  //   );
-                  // }).toList(),
-                  ),
+                  ]),
             ),
           ),
+          Consumer<TransactionsList>(
+            builder: (context, value, child) {
+              return homeController.transaction.transactionsList.isEmpty
+                  ? LayoutBuilder(builder: (ctx, constraints) {
+                      return Column(
+                        children: <Widget>[
+                          const Text(
+                            'No transactions added yet!',
+                            // style: Theme.of(context).textTheme.title,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          // Container(
+                          //     height: constraints.maxHeight * 0.6,
+                          //     child: Image.asset(
+                          //       'assets/images/waiting.png',
+                          //       fit: BoxFit.cover,
+                          //     )),
+                        ],
+                      );
+                    })
+                  : Expanded(
+                      child: ListView(
+                          shrinkWrap: true,
+                          children: homeController
+                              .transaction.transactionsList.reversed
+                              .map((transaction) => Card(
+                                    elevation: 5,
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 5,
+                                    ),
+                                    child: ListTile(
+                                      leading: Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                                maxLines: 1,
+                                                '\$${transaction.amount.toStringAsFixed(1)}'),
+                                          )),
+                                      title: Text(
+                                        transaction.title,
+                                        maxLines: 2,
+                                      ),
+                                      subtitle: Text(
+                                        DateFormat.yMd()
+                                            .format(transaction.date),
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.edit),
+                                            onPressed: () {},
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            onPressed: () {},
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ))
+                              .toList()),
+                    );
+            },
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await showModalBottomSheet(
-                    builder: (_) => const NewTransaction(), context: context)
+                    builder: (_) => NewTransaction(), context: context)
                 .then((value) {
               if (value != null) {
-                controller.add(value);
+                homeController.add(value);
               }
             });
           },
@@ -151,3 +181,30 @@ class HomeScreen extends StatelessWidget {
               //         },
               //       )),
               // ),
+                // List<Map<String, Object>> get groupedTransactionValues {
+  //   return List.generate(7, (index) {
+  //     final weekDay = DateTime.now().subtract(
+  //       Duration(days: index),
+  //     );
+  //     var totalSum = 0.0;
+
+  //     for (var i = 0; i < recentTransactions.length; i++) {
+  //       if (recentTransactions[i].date.day == weekDay.day &&
+  //           recentTransactions[i].date.month == weekDay.month &&
+  //           recentTransactions[i].date.year == weekDay.year) {
+  //         totalSum += recentTransactions[i].amount;
+  //       }
+  //     }
+
+  //     return {
+  //       'day': DateFormat.E().format(weekDay).substring(0, 1),
+  //       'amount': totalSum,
+  //     };
+  //   }).reversed.toList();
+  // }
+
+  // double get totalSpending {
+  //   return groupedTransactionValues.fold(0.0, (sum, item) {
+  //     return sum + item['amount'];
+  //   });
+  // }

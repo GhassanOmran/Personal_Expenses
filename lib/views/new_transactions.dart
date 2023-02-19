@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/controllers/new_transaction_controller.dart';
+import 'package:personal_expenses/models/transaction.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class NewTransaction extends StatelessWidget {
-  const NewTransaction({super.key});
-
-  @override
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<NewTransactionController>(context);
+    NewTransactionController newTransactionController =
+        Provider.of<NewTransactionController>(context, listen: false);
     return SingleChildScrollView(
       child: Card(
         elevation: 5,
@@ -28,21 +27,20 @@ class NewTransaction extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Text(
-                          DateFormat.yMd().format(controller.transaction.date)),
+                      child: Consumer<Transaction>(builder: (_, model, child) {
+                        return Text(DateFormat.yMd().format(model.date));
+                      }),
                     ),
                     TextButton(
                       onPressed: () async {
-                        await showDatePicker(
-                                context: context,
-                                initialDate: controller.transaction.date,
-                                firstDate: DateTime(2022),
-                                lastDate: DateTime.now())
-                            .then((value) {
-                          controller.setDate(value!);
-                          FocusScope.of(context).nextFocus();
-                        });
-                        // FocusScope.of(context).unfocus();
+                        DateTime? dateTime = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2022),
+                            lastDate: DateTime.now());
+                        if (dateTime != null) {
+                          newTransactionController.setDate(dateTime);
+                        }
                       },
                       child: const Text('Choose Date'),
                     ),
@@ -52,18 +50,20 @@ class NewTransaction extends StatelessWidget {
               TextField(
                 decoration: const InputDecoration(labelText: 'Title'),
                 onChanged: (value) {
-                  controller.setTitle(value);
+                  newTransactionController.setTitle(value);
                 },
               ),
               TextField(
                 decoration: const InputDecoration(labelText: 'Amount'),
                 keyboardType: TextInputType.number,
-                onChanged: (value) => controller.setAmount(double.parse(value)),
+                onChanged: (value) =>
+                    newTransactionController.setAmount(double.parse(value)),
               ),
               ElevatedButton(
                 child: const Text('Add Transaction'),
                 onPressed: () {
-                  controller.addTransactionToTransactionsList(context);
+                  newTransactionController
+                      .addTransactionToTransactionsList(context);
                 },
               ),
             ],

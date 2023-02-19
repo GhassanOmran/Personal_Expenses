@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_expenses/controllers/home_controller.dart';
 import 'package:personal_expenses/controllers/new_transaction_controller.dart';
 import 'package:personal_expenses/models/transaction.dart';
+import 'package:personal_expenses/models/transactions_list.dart';
 import 'package:personal_expenses/views/home.dart';
 import 'package:provider/provider.dart';
 
@@ -10,13 +11,12 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Transaction()),
-        // Add other providers here as needed
         Provider<NewTransactionController>(
-          create: (context) => NewTransactionController(),
-        ),
-        Provider<HomeController>(create: (context) => HomeController()),
+            create: (context) => NewTransactionController(context)),
+        ChangeNotifierProvider(create: (_) => TransactionsList()),
+        Provider<HomeController>(create: (context) => HomeController(context)),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
