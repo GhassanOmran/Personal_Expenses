@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class Chart extends StatelessWidget {
   final String day;
-  final String spending;
-  final String spendingOfTotal;
+  final double spending;
+  final double spendingOfTotal;
   const Chart(
       {super.key,
       required this.spending,
@@ -14,8 +14,9 @@ class Chart extends StatelessWidget {
     return Column(children: <Widget>[
       SizedBox(
         height: 20,
-        child: FittedBox(
-          child: Text(spending),
+        child: Text(
+          '\$${spending.toStringAsFixed(0)}',
+          maxLines: 1,
         ),
       ),
       const SizedBox(
@@ -25,6 +26,7 @@ class Chart extends StatelessWidget {
         height: 50,
         width: 10,
         child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
@@ -34,7 +36,7 @@ class Chart extends StatelessWidget {
               ),
             ),
             FractionallySizedBox(
-              heightFactor: 0.6, //spending of total
+              heightFactor: spendingOfTotal, //spending of total
               alignment: FractionalOffset.topCenter,
               child: Container(
                 decoration: BoxDecoration(
