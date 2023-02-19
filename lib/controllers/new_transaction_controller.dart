@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/models/transaction.dart';
+import 'package:provider/provider.dart';
 
 class NewTransactionController {
-  final Transaction _transaction = Transaction();
+  Transaction _transaction;
+
+  NewTransactionController(BuildContext context)
+      : _transaction = Provider.of<Transaction>(context, listen: false);
 
   void setTitle(String title) {
     _transaction.setTitle(title);
@@ -13,16 +17,19 @@ class NewTransactionController {
   }
 
   void setDate(DateTime date) {
-    print('2');
     _transaction.setDate(date);
   }
 
   void clearTransaction() {
-    _transaction.clearTransaction();
+    _transaction = Transaction();
   }
 
   void addTransactionToTransactionsList(BuildContext context) {
-    Navigator.of(context).pop(_transaction);
+    if (_transaction.title.toString().isNotEmpty &
+        _transaction.amount.toString().isNotEmpty) {
+      Navigator.of(context).pop(_transaction);
+      clearTransaction();
+    }
   }
 
   Transaction get transaction => _transaction;

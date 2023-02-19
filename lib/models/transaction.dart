@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Transaction extends ChangeNotifier {
+class Transaction with ChangeNotifier {
   late String _title;
   late double _amount;
   late DateTime _date = DateTime.now();
