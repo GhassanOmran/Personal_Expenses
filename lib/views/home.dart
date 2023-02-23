@@ -95,20 +95,14 @@ class HomeScreen extends StatelessWidget {
               value.transactionsList.isEmpty
                   ? LayoutBuilder(builder: (ctx, constraints) {
                       return Column(
-                        children: const <Widget>[
-                          Text(
-                            'No transactions added yet!',
-                            // style: Theme.of(context).textTheme.title,
+                        children: <Widget>[
+                          GestureDetector(
+                            child: const Icon(
+                              Icons.refresh,
+                              size: 30,
+                            ),
+                            onTap: () => homeController.loadData(),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          // Container(
-                          //     height: constraints.maxHeight * 0.6,
-                          //     child: Image.asset(
-                          //       'assets/images/waiting.png',
-                          //       fit: BoxFit.cover,
-                          //     )),
                         ],
                       );
                     })
@@ -180,48 +174,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-              // Chart(
-              //   state: ChartState<void>(
-              //       data: ChartData([
-              //         [3, 5, 7, 9, 4, 3, 50]
-              //             .map((e) => ChartItem<void>(e.toDouble()))
-              //             .toList()
-              //       ]),
-              //       itemOptions: BarItemOptions(
-              //         barItemBuilder: (data) {
-              //           final colorForValue =
-              //               Colors.accents[data.itemIndex % 15];
-              //           return BarItem(
-              //             radius: const BorderRadius.all(Radius.circular(50)),
-              //             color: Theme.of(context).colorScheme.primary,
-              //           );
-              //         },
-              //       )),
-              // ),
-                // List<Map<String, Object>> get groupedTransactionValues {
-  //   return List.generate(7, (index) {
-  //     final weekDay = DateTime.now().subtract(
-  //       Duration(days: index),
-  //     );
-  //     var totalSum = 0.0;
-
-  //     for (var i = 0; i < recentTransactions.length; i++) {
-  //       if (recentTransactions[i].date.day == weekDay.day &&
-  //           recentTransactions[i].date.month == weekDay.month &&
-  //           recentTransactions[i].date.year == weekDay.year) {
-  //         totalSum += recentTransactions[i].amount;
-  //       }
-  //     }
-
-  //     return {
-  //       'day': DateFormat.E().format(weekDay).substring(0, 1),
-  //       'amount': totalSum,
-  //     };
-  //   }).reversed.toList();
-  // }
-
-  // double get totalSpending {
-  //   return groupedTransactionValues.fold(0.0, (sum, item) {
-  //     return sum + item['amount'];
-  //   });
-  // }
