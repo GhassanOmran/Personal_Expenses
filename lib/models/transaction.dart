@@ -8,7 +8,6 @@ class Transaction with ChangeNotifier {
   String get title => _title;
   double get amount => _amount;
   DateTime get date => _date;
-
   void setTitle(String title) {
     _title = title;
     notifyListeners();
@@ -29,5 +28,21 @@ class Transaction with ChangeNotifier {
     _amount = 0.0;
     _date = DateTime.now();
     notifyListeners();
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'date': _date.toString(),
+      'title': _title,
+      'amount': _amount,
+    };
+  }
+
+  static Transaction fromMap(Map<String, dynamic> map) {
+    Transaction transaction = Transaction();
+    transaction.setAmount(map['amount']);
+    transaction.setDate(DateTime.parse(map['date']));
+    transaction.setTitle(map['title']);
+    return transaction;
   }
 }

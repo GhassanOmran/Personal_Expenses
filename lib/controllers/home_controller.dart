@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class HomeController {
   final TransactionsList _transactionsList;
-
+  bool loading = true;
   HomeController(BuildContext context)
       : _transactionsList =
             Provider.of<TransactionsList>(context, listen: false);
@@ -48,4 +48,8 @@ class HomeController {
   }
 
   TransactionsList get transaction => _transactionsList;
+
+  loadData() {
+    _transactionsList.getCached();
+  }
 }
