@@ -40,7 +40,7 @@ class Transaction with ChangeNotifier {
 
   static Transaction fromMap(Map<String, dynamic> map) {
     Transaction transaction = Transaction();
-    transaction.setAmount(map['amount']);
+    transaction.setAmount(double.parse(map['amount']));
     transaction.setDate(DateTime.parse(map['date']));
     transaction.setTitle(map['title']);
     return transaction;

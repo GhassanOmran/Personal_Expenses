@@ -1,20 +1,33 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/models/transaction.dart';
-import 'package:personal_expenses/models/transactions_repository.dart';
+import 'package:personal_expenses/services/shared_preferences_repository.dart';
+import 'package:personal_expenses/services/sqflite_repository.dart';
 
 class TransactionsList extends ChangeNotifier {
   late List<Transaction> transactionsList = [];
-  TransactionsRepository transactionsRepository = TransactionsRepository();
+  //sharedPrefernces
+  // SharedPreferencesRepository transactionsRepository =
+  //     SharedPreferencesRepository();
+  // Sqflite
+  SqfliteRepository sqfliteRepository = SqfliteRepository();
   void add(Transaction transaction) {
     transactionsList.add(transaction);
-    transactionsRepository.saveTransactionList(transaction);
+    //sharedPrefernces
+    //transactionsRepository.saveTransactionList(transaction);
+
+    // Sqflite
+    sqfliteRepository.saveTransactionList(transaction);
     notifyListeners();
   }
 
   void getCached() async {
-    transactionsList = await transactionsRepository.loadTransactionList();
+    //sharedPrefernces
+    //transactionsList = await transactionsRepository.loadTransactionList();
+
+    // Sqflite
+    transactionsList = (await sqfliteRepository.loadTransactionList()) ?? [];
+
     notifyListeners();
   }
 
