@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:personal_expenses/models/transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TransactionsRepository {
+class SharedPreferencesRepository {
   static String key = 'transactions';
 
   Future<List<Transaction>> loadTransactionList() async {
@@ -23,9 +23,5 @@ class TransactionsRepository {
       test.map((transaction) => transaction.toMap()).toList(),
     );
     await prefs.setString(key, transactionJson);
-
-    for (var element in test) {
-      print(element.title);
-    }
   }
 }
